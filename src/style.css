@@ -1,0 +1,29 @@
+#clickable-menu {
+  box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  display: none;
+}
+
+#clickable-menu .clickable-menu-options {
+  list-style: none;
+  padding: 0 0; 
+}
+
+#clickable-menu .clickable-menu-options .clickable-menu-option {
+  font-size: 14px;
+  padding: 10px 40px 10px 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#clickable-menu .clickable-menu-options .clickable-menu-option .clickable-icon {
+  width: 20px;
+  height: 20px;
+  padding-right: 10px;
+}
+
+#clickable-menu .clickable-menu-options .clickable-menu-option:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
