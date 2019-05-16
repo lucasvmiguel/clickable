@@ -1,0 +1,27 @@
+{
+  "name": "clickable",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json && uglifyjs build/script.js -o build/script.min.js",
+    "watch": "tsc -w -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasvmiguel/clickable.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucasvmiguel/clickable/issues"
+  },
+  "homepage": "https://github.com/lucasvmiguel/clickable#readme",
+  "dependencies": {
+    "typescript": "^3.4.5"
+  },
+  "devDependencies": {
+    "uglify-js": "^3.5.12"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "out": "./build/script.js",
+    "target": "es5",
+    "moduleResolution": "node",
+    "declaration": false,
+    "lib": [
+      "es2016"
+    ],
+  },
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "./src/**/*.spec.ts"
+  ]
+}

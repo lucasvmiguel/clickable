@@ -1,3 +1,6 @@
+// @ts-ignore
+const windowObj = window;
+
 const response = {
   global: true,
   menu: {
@@ -14,7 +17,7 @@ const response = {
   }
 };
 
-window.addEventListener('load', () => {
+windowObj.addEventListener('load', () => {
   let menuValue = null;
   let menuVisible = null;
   let apiResponse = null;
@@ -108,15 +111,15 @@ window.addEventListener('load', () => {
   });
 
   const sendClickItem = ({ id, value }) => {
-    return fetch(`https://apiurl.com/options/${id}`, {
+    return windowObj.fetch(`https://apiurl.com/options/${id}`, {
       method: 'put',
       body: JSON.stringify({ value })
     });
   };
 
   const setPosition = ({ menuNode, top, left }) => {
-    const fixedLeft = left + menuNode.offsetWidth <= window.innerWidth ? left : left - menuNode.offsetWidth;
-    const fixedTop = top + menuNode.offsetHeight <= window.innerHeight ? top : top - menuNode.offsetHeight;
+    const fixedLeft = left + menuNode.offsetWidth <= windowObj.innerWidth ? left : left - menuNode.offsetWidth;
+    const fixedTop = top + menuNode.offsetHeight <= windowObj.innerHeight ? top : top - menuNode.offsetHeight;
 
     menuNode.style.left = `${fixedLeft}px`;
     menuNode.style.top = `${fixedTop}px`;
@@ -137,11 +140,11 @@ window.addEventListener('load', () => {
   };
 
   const getMenuNode = () => {
-    return document.getElementById("clickable-menu");
+    return windowObj.document.getElementById("clickable-menu");
   }
 
   const deleteMenuNode = () => {
-    const menu = document.getElementById("clickable-menu");
+    const menu = windowObj.document.getElementById("clickable-menu");
     if (!menu) {
       return;
     }
@@ -153,10 +156,10 @@ window.addEventListener('load', () => {
     const items = menuType ? apiResponse.menu[menuType] : apiResponse.menu.default;
     const markup = menuMarkup(items);
 
-    document.getElementsByTagName("body")[0].innerHTML += markup;
+    windowObj.document.getElementsByTagName("body")[0].innerHTML += markup;
   };
 
-  window.addEventListener("click", e => {
+  windowObj.addEventListener("click", e => {
     const id = e.target.id;
 
     if (menuVisible && id) {
@@ -168,7 +171,7 @@ window.addEventListener('load', () => {
     deleteMenuNode();
   });
 
-  window.addEventListener("contextmenu", e => {
+  windowObj.addEventListener("contextmenu", e => {
     e.preventDefault();
     const attrs = getFirstClickableAttribute(e.target);
     const position = getPositionClicked(e);
