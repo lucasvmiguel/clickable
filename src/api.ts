@@ -18,10 +18,15 @@ export interface IConfig {
 
 export const getConfig = (apiKey: string): Promise<IConfig> => {
   return Promise.resolve({
-    global: true,
+    global: false,
+    breakpoints: {
+      mobile: false,
+      tablet: true,
+      desktop: true
+    },
     menu: {
       default: [
-        { id: 1, text: "Like", icon: Icons.Like },
+        { id: 1, text: "Like", icon: Icons.Like, hook: 'https://whatever.com/{value}' },
         { id: 2, text: "Dislike", icon: Icons.Dislike },
         { id: 3, text: "Share", icon: Icons.Share },
       ],

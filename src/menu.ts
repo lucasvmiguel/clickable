@@ -5,8 +5,7 @@ import { getPositionClicked } from "./mouse";
 let menuValue = null;
 let menuVisible = null;
 
-export const createMenu = (config: api.IConfig, event: MouseEvent) => {
-  const attrs = getFirstClickableAttribute(event.target as HTMLElement);
+export const createMenu = (config: api.IConfig, event: MouseEvent, attrs?: { value?: string, menu?: string }) => {
   const position = getPositionClicked(event);
 
   const items = attrs && attrs.menu && config.menu[attrs.menu] ? config.menu[attrs.menu] : config.menu.default;
@@ -33,15 +32,7 @@ export const deleteMenuNode = () => {
   menuValue = false;
 }
 
-const setPosition = (menuNode: HTMLElement, position: { top: number, left: number }) => {
-  const fixedLeft = position.left + menuNode.offsetWidth <= window.innerWidth ? position.left : position.left - menuNode.offsetWidth;
-  const fixedTop = position.top + menuNode.offsetHeight <= window.innerHeight ? position.top : position.top - menuNode.offsetHeight;
-
-  menuNode.style.left = `${fixedLeft}px`;
-  menuNode.style.top = `${fixedTop}px`;
-};
-
-const getFirstClickableAttribute = (node: HTMLElement): { value?: string, menu?: string } => {
+export const getFirstClickableAttribute = (node: HTMLElement): { value?: string, menu?: string } => {
   if (!node || !node.getAttributeNode) {
     return null;
   }
@@ -56,6 +47,16 @@ const getFirstClickableAttribute = (node: HTMLElement): { value?: string, menu?:
   // @ts-ignore
   return getFirstClickableAttribute(node.parentNode);
 };
+
+const setPosition = (menuNode: HTMLElement, position: { top: number, left: number }) => {
+  const fixedLeft = position.left + menuNode.offsetWidth <= window.innerWidth ? position.left : position.left - menuNode.offsetWidth;
+  const fixedTop = position.top + menuNode.offsetHeight <= window.innerHeight ? position.top : position.top - menuNode.offsetHeight;
+
+  menuNode.style.left = `${fixedLeft}px`;
+  menuNode.style.top = `${fixedTop}px`;
+};
+
+
 
 const menuMarkup = (options: api.IOption[]) => {
   if (options.length < 1) {
