@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "out": "./build/script.js",
+    "outDir": "./build",
     "target": "es5",
-    "moduleResolution": "node",
     "declaration": false,
     "lib": [
+      "dom",
       "es2016"
     ],
   },
