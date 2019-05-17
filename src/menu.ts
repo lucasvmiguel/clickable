@@ -1,19 +1,57 @@
+import config from "./config";
+
 import * as api from "./api";
 import * as icon from "./icon";
-import { getPositionClicked } from "./mouse";
+import * as mouse from "./mouse";
+import * as screen from "./screen";
 
 let menuValue = null;
-let menuVisible = null;
+let menuVisible = false;
 
-export const createMenu = (config: api.IConfig, event: MouseEvent, attrs?: { value?: string, menu?: string }) => {
-  const position = getPositionClicked(event);
+interface IAttributes {
+  value?: string;
+  menu?: string;
+}
 
-  const items = attrs && attrs.menu && config.menu[attrs.menu] ? config.menu[attrs.menu] : config.menu.default;
+export const isMenuVisible = (): boolean => {
+  return menuVisible;
+}
+
+export const getMenuValue = (): string | null => {
+  return menuValue;
+}
+
+export const shouldShowMenu = (apiConfig: api.IConfig, attrs?: IAttributes): boolean => {
+  if (!apiConfig.global && !attrs) {
+    return false;
+  }
+
+  const screenWidth = screen.getWidth();
+  if (!apiConfig.breakpoints.mobile && screenWidth < config.breakpoints.mobile) {
+    return false;
+  }
+
+  if (!apiConfig.breakpoints.tablet && screenWidth >= config.breakpoints.mobile && screenWidth < config.breakpoints.desktop) {
+    return false;
+  }
+
+  if (!apiConfig.breakpoints.desktop && screenWidth >= config.breakpoints.desktop) {
+    return false;
+  }
+
+
+  return true;
+}
+
+export const createMenu = (apiConfig: api.IConfig, event: MouseEvent, attrs?: IAttributes) => {
+  const position = mouse.getPositionClicked(event);
+
+  const items = attrs && attrs.menu && apiConfig.menu[attrs.menu] ? apiConfig.menu[attrs.menu] : apiConfig.menu.default;
 
   const markup = menuMarkup(items);
-  window.document.getElementsByTagName("body")[0].innerHTML += markup;
+  screen.getElementByTag("body").innerHTML += markup;
 
-  const menuNode = window.document.getElementById("clickable-menu");
+  const menuNode = screen.getElementById(config.htmlIdentifiers.menu);
   setPosition(menuNode, position);
 
   menuValue = attrs && attrs.value;
@@ -21,7 +59,7 @@ export const createMenu = (config: api.IConfig, event: MouseEvent, attrs?: { val
 };
 
 export const deleteMenuNode = () => {
-  const menu = window.document.getElementById("clickable-menu");
+  const menu = screen.getElementById(config.htmlIdentifiers.menu);
   if (!menu) {
     return;
   }
@@ -29,18 +67,17 @@ export const deleteMenuNode = () => {
   menu.parentElement.removeChild(menu);
 
   menuVisible = false;
-  menuValue = false;
+  menuValue = null;
 }
 
-export const getFirstClickableAttribute = (node: HTMLElement): { value?: string, menu?: string } => {
+export const getFirstClickableAttribute = (node: HTMLElement): IAttributes => {
   if (!node || !node.getAttributeNode) {
     return null;
   }
 
-  const valueAttr = node.getAttribute("data-clickable-value");
-  const menuAttr = node.getAttribute("data-clickable-menu");
+  const valueAttr = node.getAttribute(config.htmlAttrs.value);
+  const menuAttr = node.getAttribute(config.htmlAttrs.menu);
   if (valueAttr || menuAttr) {
-    // @ts-ignore
     return { value: valueAttr, menu: menuAttr };
   }
 
@@ -49,14 +86,14 @@ export const getFirstClickableAttribute = (node: HTMLElement): { value?: string,
 };
 
 const setPosition = (menuNode: HTMLElement, position: { top: number, left: number }) => {
-  const fixedLeft = position.left + menuNode.offsetWidth <= window.innerWidth ? position.left : position.left - menuNode.offsetWidth;
-  const fixedTop = position.top + menuNode.offsetHeight <= window.innerHeight ? position.top : position.top - menuNode.offsetHeight;
+  const screenWidth = screen.getWidth();
+  const screenHeight = screen.getHeight();
+  const fixedLeft = position.left + menuNode.offsetWidth <= screenWidth ? position.left : position.left - menuNode.offsetWidth;
+  const fixedTop = position.top + menuNode.offsetHeight <= screenHeight ? position.top : position.top - menuNode.offsetHeight;
 
   menuNode.style.left = `${fixedLeft}px`;
   menuNode.style.top = `${fixedTop}px`;
 };
-
-
 
 const menuMarkup = (options: api.IOption[]) => {
   if (options.length < 1) {
@@ -66,8 +103,8 @@ const menuMarkup = (options: api.IOption[]) => {
   const optionsMarkup = options.map(o => itemMarkup(o)).join('');
 
   return `
-    <div id="clickable-menu" style="display: block">
-      <ul class="clickable-menu-options">
+    <div id="${config.htmlIdentifiers.menu}" style="display: block">
+      <ul class="${config.htmlIdentifiers.menuOptions}">
         ${optionsMarkup}
       </ul>
     </div>
@@ -75,7 +112,7 @@ const menuMarkup = (options: api.IOption[]) => {
 };
 
 const itemMarkup = (option: api.IOption) => `
-  <li class="clickable-menu-option" id="clickable-${option.id}">
+  <li class="${config.htmlIdentifiers.menuOption}" id="${config.htmlIdentifiers.menuOption}-${option.id}">
     ${icon.getIconMarkup(option.icon)}
     ${option.text}
   </li>

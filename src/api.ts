@@ -1,3 +1,5 @@
+import config from "./config";
+
 export enum Icons {
   Like = 'like',
   Dislike = 'dislike',
@@ -13,6 +15,11 @@ export interface IOption {
 
 export interface IConfig {
   global: boolean;
+  breakpoints: {
+    mobile: boolean;
+    tablet: boolean;
+    desktop: boolean;
+  }
   menu: { [key: string]: IOption[] };
 }
 
@@ -20,8 +27,8 @@ export const getConfig = (apiKey: string): Promise<IConfig> => {
   return Promise.resolve({
     global: false,
     breakpoints: {
-      mobile: false,
-      tablet: true,
+      mobile: true,
+      tablet: false,
       desktop: true
     },
     menu: {
@@ -40,7 +47,7 @@ export const getConfig = (apiKey: string): Promise<IConfig> => {
 };
 
 export const sendClickItem = (id: string, value: string) => {
-  return fetch(`https://apiurl.com/options/${id}`, {
+  return fetch(`${config.api.url}/options/${id}`, {
     method: 'put',
     body: JSON.stringify({ value })
   });
